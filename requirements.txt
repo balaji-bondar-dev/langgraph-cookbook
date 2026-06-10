@@ -1,0 +1,47 @@
+A recommended VS Code folder structure for a standard, production-ready LangGraph project separates configuration, state management, graph definitions, and external tools. [1]  
+This layout aligns with standard practices for local execution and seamless deployment to LangGraph Server / LangGraph Studio. [2]  
+Recommended Project Structure 
+Core Components Break Down 
+1. Configuration (Root Directory) • : This is required to compile your application via the LangGraph CLI. It maps a custom alias to your compiled graph variable (e.g., pointing to ). 
+•  or : Declares package versions like , , and any specific LLM provider packages (like ). 
+• : Stores secure platform items like  or . [1, 2, 3, 4, 5]  
+
+2. Workflow Logic () • : Keeps your shared application variables in a central place. This file contains the keys or properties that flow between nodes via  or  schemas. 
+• : Contains the pure Python functions that receive the current state, run computation (like querying an LLM), and return updated keys. 
+• : Holds custom actions exposed to the LLM (e.g., scraping tools or database lookup connectors). [1, 6, 7, 8, 9]  
+
+3. Orchestration () • This file imports configurations from your  directory. 
+• It initializes the frameworks , registers your functions using , binds transitions using  / , and exposes the finalized  variable. [1, 8, 10, 11, 12]  
+
+If you want to refine this workspace layout further, share a couple of details: 
+
+• What package manager are you using (e.g., Poetry, Pipenv, or standard )? 
+• Will your project use a single agent or a multi-agent system? [1, 13]  
+
+I can provide the specific boilerplate configuration code for your  and  setups. 
+
+AI responses may include mistakes.
+
+
+my-langgraph-app/
+├── .env                  # Local API keys and secret variables
+├── .gitignore            # Ignore env files, venv, and cache files
+├── langgraph.json        # Main configuration file for LangGraph CLI/Studio
+├── pyproject.toml        # Project metadata and package dependencies
+│
+├── src/                  # All project source code resides here
+│   └── my_agent/         # Your dedicated agent package module
+│       ├── __init__.py   # Marks directory as a Python package
+│       │
+│       ├── graph.py      # Combines state, nodes, and edges into compiled graph
+│       │
+│       └── utils/        # Internal modular components of the graph
+│           ├── __init__.py
+│           ├── state.py  # Definition of the StateGraph TypedDict or Pydantic state
+│           ├── nodes.py  # Isolated business logic and LLM steps (node functions)
+│           ├── tools.py  # Definition of tools the agent can use (e.g., search API)
+│           └── prompts.py# Centralized system messages and instructions
+│
+└── tests/                # System evaluation and workflow testing files
+    ├── __init__.py
+    └── test_graph.py     # Component testing for nodes and edges
